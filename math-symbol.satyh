@@ -25,12 +25,12 @@ let get-standard-context wid =
     |> set-font Latin font-latin-roman
     |> set-math-font `lmodern`
     |> set-hyphen-penalty 100
-    |> set-font-size 100pt
+    |> set-font-size 30pt
 
 let document math-list =
 
-  let paperwidth = 100pt in
-  let paperheight = 100pt in
+  let paperwidth = 30pt in
+  let paperheight = 30pt in
   let textwidth = paperwidth in
   let textheight = paperheight in
 
