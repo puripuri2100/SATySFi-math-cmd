@@ -1,0 +1,24 @@
+@import: math-symbol
+@require: math
+
+document ${
+| \to 
+| \pm 
+| \mp 
+| \times 
+| \setminus 
+| \ast 
+| \circ 
+| \bullet 
+| \cap 
+| \cup 
+| \uplus 
+| \sqcap 
+| \sqcup 
+| \wedge 
+| \vee 
+| \oplus 
+| \ominus 
+| \otimes 
+| \oslash 
+|}
