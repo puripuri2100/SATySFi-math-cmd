@@ -1,0 +1,68 @@
+@require: list
+@require: math
+
+module MathSymbol : sig
+
+val document : math list -> document
+
+end = struct
+
+let font-latin-roman  = (`Junicode`, 1., 0.)
+let font-latin-italic = (`Junicode-it`, 1., 0.)
+let font-latin-sans   = (`lmsans`, 1., 0.)
+let font-cjk-mincho   = (`ipaexm`, 0.88, 0.)
+let font-cjk-gothic   = (`ipaexg`, 0.88, 0.)
+
+let get-standard-context wid =
+  get-initial-context wid (command \math)
+    |> set-dominant-wide-script Kana
+    |> set-language Kana Japanese
+    |> set-language HanIdeographic Japanese
+    |> set-dominant-narrow-script Latin
+    |> set-language Latin English
+    |> set-font Kana font-cjk-mincho
+    |> set-font HanIdeographic font-cjk-mincho
+    |> set-font Latin font-latin-roman
+    |> set-math-font `lmodern`
+    |> set-hyphen-penalty 100
+    |> set-font-size 100pt
+
+let document math-list =
+
+  let paperwidth = 100pt in
+  let paperheight = 100pt in
+  let textwidth = paperwidth in
+  let textheight = paperheight in
+
+  let ctx-doc = get-standard-context textwidth in
+
+  let ma-bb math =
+    let ma-ib = embed-math ctx-doc math in
+    line-break true true ctx-doc (inline-fil ++ ma-ib ++ inline-fil) in
+
+  let bb-main = List.fold-left (+++) block-nil (
+    List.map ma-bb ( math-list))
+  in
+
+  let page = UserDefinedPaper (paperwidth, paperheight) in
+
+  let pagecontf pbinfo =
+    (|
+      text-origin = (0pt, 0pt);
+      text-height = textheight;
+    |)
+  in
+
+  let pagepartsf pbinfo =
+  (|
+    header-origin  = (0pt, 0pt);
+    header-content = block-nil;
+    footer-origin  = (paperwidth, paperheight);
+    footer-content = block-nil;
+  |)
+  in
+  page-break page pagecontf pagepartsf bb-main
+
+end
+
+let document = MathSymbol.document
