@@ -45,7 +45,7 @@ let message_saty =
       |> List.fold_left (^) ""
 
 
-let cmd_num = ref 0
+let cmd_num = ref 1
 
 let s_n_list s =
   let () = cmd_num := !cmd_num + 1 in

@@ -29,8 +29,8 @@ let get-standard-context wid =
 
 let document math-list =
 
-  let paperwidth = 30pt in
-  let paperheight = 30pt in
+  let paperwidth = 65pt in
+  let paperheight = 68pt in
   let textwidth = paperwidth in
   let textheight = paperheight in
 
@@ -40,7 +40,9 @@ let document math-list =
     let ma-ib = embed-math ctx-doc math in
     line-break true true ctx-doc (inline-fil ++ ma-ib ++ inline-fil) in
 
-  let bb-main = List.fold-left (+++) block-nil (
+  let (++++>) x y = x +++ clear-page +++ y in
+
+  let bb-main = List.fold-left (++++>) block-nil (
     List.map ma-bb ( math-list))
   in
 
