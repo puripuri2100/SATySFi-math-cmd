@@ -1,6 +1,5 @@
 all:
-	satysfi math-greece.saty -o math-greece.pdf
-	gs -sDEVICE=pngalpha -o math-greece-%01d.png -r144 math-greece.pdf
-
-	satysfi math-operator.saty -o math-operator.pdf
-	gs -sDEVICE=pngalpha -o math-operator-%01d.png -r144 math-operator.pdf
+	ocamlc str.cma main.ml -o main
+	./main
+	satysfi main.saty -o math-cmd.pdf
+	gs -sDEVICE=pngalpha -o img/math-cmd-%01d.png -r144 math-cmd.pdf
