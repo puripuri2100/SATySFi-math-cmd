@@ -29,8 +29,8 @@ let get-standard-context wid =
 
 let document math-list =
 
-  let paperwidth = 65pt in
-  let paperheight = 68pt in
+  let paperwidth = 100pt in
+  let paperheight = 100pt in
   let textwidth = paperwidth in
   let textheight = paperheight in
 
