@@ -1,3 +1,5 @@
-*.cmo
+main
 *.cmi
+*.cmo
 *.satysfi-aux
+*.pdf
