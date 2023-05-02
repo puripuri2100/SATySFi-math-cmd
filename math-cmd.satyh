@@ -27,31 +27,74 @@ let get-standard-context wid =
     |> set-hyphen-penalty 100
     |> set-font-size 30pt
 
-let document math-list =
 
-  let paperwidth = 100pt in
-  let paperheight = 100pt in
-  let textwidth = paperwidth in
-  let textheight = paperheight in
+let-rec get-max-size w h l =
+  match l with
+  | [] -> (w, h)
+  | (w2, h2)::xs -> (
+    let w =
+      if w2 >' w then
+        w2
+      else
+        w
+    in
+    let h =
+      if h2 >' h then
+        h2
+      else
+        h
+    in
+    get-max-size w h xs
+  )
 
-  let ctx-doc = get-standard-context textwidth in
 
-  let ma-bb math =
-    let ma-ib = embed-math ctx-doc math in
-    line-break true true ctx-doc (inline-fil ++ ma-ib ++ inline-fil) in
+let document math-lst =
 
-  let (++++>) x y = x +++ clear-page +++ y in
+  let dummy-width = 300mm in
+  let dummy-ctx = get-standard-context dummy-width in
 
-  let bb-main = List.fold-left (++++>) block-nil (
-    List.map ma-bb ( math-list))
+  let(max-width, max-height) =
+    math-lst
+    |> List.map (fun m -> (
+      m
+      |> embed-math dummy-ctx
+      |> get-natural-metrics
+      |> (fun (w,h,d) -> (w, h+'d))
+    ))
+    |> get-max-size 0pt 0pt
   in
 
-  let page = UserDefinedPaper (paperwidth, paperheight) in
+  let pad = 15pt in
+  let width = max-width +' (pad *' 2.0) in
+  let height = max-height +' (pad *' 2.0) in
+
+  let ctx = get-standard-context width in
+
+
+  let bb-main =
+    math-lst
+    |> List.map (fun m -> (
+      let ib = inline-fil ++ embed-math ctx m ++ inline-fil in
+      let bb = line-break true true ctx ib in
+      let h = get-natural-length bb in
+      let p = (height -' h) *' 0.2 in
+      block-skip p +++ bb
+    ))
+    |> List.fold-lefti (fun i bb1 bb2 -> (
+      if i == 0 then
+        bb2
+      else
+        bb1 +++ clear-page +++ bb2
+    )) block-nil
+  in
+
+
+  let page = UserDefinedPaper (width, height) in
 
   let pagecontf pbinfo =
     (|
       text-origin = (0pt, 0pt);
-      text-height = textheight;
+      text-height = height;
     |)
   in
 
@@ -59,7 +102,7 @@ let document math-list =
   (|
     header-origin  = (0pt, 0pt);
     header-content = block-nil;
-    footer-origin  = (paperwidth, paperheight);
+    footer-origin  = (width, height);
     footer-content = block-nil;
   |)
   in
